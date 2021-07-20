@@ -16,7 +16,7 @@ import (
 type contacts struct {
 	Type    string `json:"type"`
 	Content []struct {
-		Jid    string `json:"jid"`
+		JID    string `json:"jid"`
 		Name   string `json:"name"`
 		Notify string `json:"notify"`
 	} `json:"content"`
@@ -46,7 +46,7 @@ func (w *WhatsApp) GetContacts(ctx context.Context, userID int64) ([]entities.Co
 	contacts := make([]entities.Contact, len(rawContacts.Content))
 	for i, c := range rawContacts.Content {
 		contacts[i] = entities.Contact{
-			ID:   c.Jid,
+			ID:   c.JID,
 			Name: c.Name,
 		}
 	}

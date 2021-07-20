@@ -85,3 +85,79 @@ definitions:
       status: 422
       title: "Unprocessable Entity"
       detail: "First name must contain at least three characters"
+
+  Chat:
+    required:
+      - "id"
+      - "name"
+      - "last_message"
+      - "message_count"
+      - "unread_messages"
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      last_message:
+        $ref: "#/definitions/Message"
+      message_count:
+        type: "integer"
+        format: "int32"
+      unread_messages:
+        type: "integer"
+        format: "int32"
+
+  Chats:
+    required:
+      - "chats"
+    type: "object"
+    properties:
+      contacts:
+        type: "array"
+        items:
+          $ref: "#/definitions/Chat"
+
+  Content:
+    type: "object"
+    properties:
+      subject:
+        type: "string"
+      text:
+        type: "string"
+      image:
+        $ref: "#/definitions/Image"
+
+  Image:
+    required:
+      - "url"
+      - "media_type"
+    type: "object"
+    properties:
+      url:
+        type: "string"
+      media_type:
+        type: "string"
+      width:
+        type: "integer"
+        format: "int32"
+      height:
+        type: "integer"
+        format: "int32"
+
+  Message:
+    required:
+      - "id"
+      - "from"
+      - "sent_at"
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+      content:
+        $ref: "#/definitions/Content"
+      sent_at:
+        type: "string"
+        format: "date"

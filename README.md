@@ -28,9 +28,7 @@ TODO
 
 ### Running Tests
 
-* `./scripts/lint`
-* `./scripts/vet`
-* `./scripts/test`
+* `go test ./...`
 
 ### Building
 

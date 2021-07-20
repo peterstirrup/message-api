@@ -1,4 +1,4 @@
-package whatsapp
+package whatsapp_test
 
 import (
 	"context"
@@ -6,6 +6,8 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/peterstirrup/messages/internal/repositories/whatsapp"
 
 	"github.com/peterstirrup/messages/internal/messages/errors"
 
@@ -17,14 +19,14 @@ import (
 var ctx = context.Background()
 
 type setupWhatsAppTestConfig struct {
-	w   *WhatsApp
+	w   *whatsapp.WhatsApp
 	srv *httptest.Server
 }
 
 func setupWhatsAppTest(t *testing.T, h http.HandlerFunc) *setupWhatsAppTestConfig {
 	srv := httptest.NewServer(h)
 
-	w, err := New(&http.Client{}, srv.URL)
+	w, err := whatsapp.New(&http.Client{}, srv.URL)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -93,7 +95,7 @@ func TestWhatsApp_GetContacts(t *testing.T) {
 	})
 
 	t.Run("returns err when client is missing from New() call", func(t *testing.T) {
-		_, err := New(nil, "")
+		_, err := whatsapp.New(nil, "")
 		if err != errors.HTTPClientMissing {
 			t.Fatalf("expected %s, got: %s", errors.HTTPClientMissing, err)
 		}
