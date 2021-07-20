@@ -1,0 +1,87 @@
+---
+swagger: "2.0"
+info:
+  title: "Messages API"
+  description: "API for messages"
+  version: "1.0.0"
+  contact:
+    name: "Compose"
+    email: "peterstirrup96@hotmail.co.uk"
+    url: "https://www.peterstirrup.co.uk"
+host: "TODO"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+schemes:
+  - "http"
+paths:
+  "/whatsapp/contacts":
+    get:
+      operationId: "list-whatsapp-contacts"
+      summary: "Get all WhatsApp contacts for a client"
+      description: >
+        Return all WhatsApp contacts, and their information, for a client. If a
+        client currently has no WhatsApp contacts then an empty array is returned.
+
+        The client ID is sent in the header of the request.
+      parameters:
+        - name: "client"
+          description: "Client ID"
+          in: "header"
+          type: "string"
+          required: true
+      responses:
+        200:
+          description: "OK"
+          schema:
+            $ref: "#/definitions/Contacts"
+        default:
+          description: "Unexpected Error"
+          schema:
+            $ref: "#/definitions/Error"
+
+definitions:
+  Contact:
+    required:
+      - "id"
+      - "name"
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+
+  Contacts:
+    required:
+      - "contacts"
+    type: "object"
+    properties:
+      contacts:
+        type: "array"
+        items:
+          $ref: "#/definitions/Contact"
+
+  Error:
+    description: >
+      The structure of this type is a subset of the fields found in the
+      JSON:API error type specification (https://jsonapi.org/format/#errors).
+    required:
+      - "status"
+      - "title"
+    type: "object"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+      title:
+        type: "string"
+      detail:
+        type: "string"
+      meta:
+        type: "object"
+    example:
+      status: 422
+      title: "Unprocessable Entity"
+      detail: "First name must contain at least three characters"

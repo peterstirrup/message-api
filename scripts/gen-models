@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+IMAGE_DIGEST="sha256:f345253f259d8588a620c3d5c4c5c55f356bea5328c90bf77e177c90f922d962"
+CLIENT_PATH="pkg/client"
+
+if [[ -d "${CLIENT_PATH}" ]]; then
+  echo "===> Removing existing client"
+  rm -r "./${CLIENT_PATH}"
+fi
+
+echo "===> Generating new client"
+
+docker run --rm -w /usr/src/app -v $(pwd):/usr/src/app -u $(id -u):$(id -g) openapitools/openapi-generator-cli@${IMAGE_DIGEST} generate \
+  -i openapi.yaml \
+  -g go \
+  -o ${CLIENT_PATH} \
+  -c ./openapi-config.json
+
+replace() {
+  sed -i.bak "${1}" "${CLIENT_PATH}/${2}" && rm -r ${CLIENT_PATH}/*.go.bak
+}
+
+# swagger-codegen-cli produces Go files that are not in keeping with the Go
+# formatting standards. Format the files and re-write them.
+docker run --rm -v $(pwd):/go -u $(id -u):$(id -g) golang:1.13-alpine3.10 gofmt -w ${CLIENT_PATH}
+
+# Remove garbage.
+rm -rf ${CLIENT_PATH}/{.openapi-generator,api,docs,.gitignore,.openapi-generator-ignore,.travis.yml,git_push.sh,README.md,go.mod,go.sum}
